@@ -26,9 +26,9 @@ public:
     void drawTubeSkeleton();
     void drawTubeNormals(float normalLenght=10);
     void drawTubeTangents(float tangentLength=10);
-    void drawTubeRings(float ringRadius=10);
+    void drawTubeRings();
     
     ofPolyline tubePoly;
     vector<float> tubeRadius;
-    float tubeResolution;
+    int tubeResolution;
 };

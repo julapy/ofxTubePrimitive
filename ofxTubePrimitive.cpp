@@ -63,21 +63,74 @@ void ofxTubePrimitive::update() {
         mesh->clear();
     }
     
+    mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+    
     for(int i=0; i<tubePoly.size(); i++) {
-        const ofVec3f & point = tubePoly.getVertices()[i];
-        const ofVec3f & normal = tubePoly.getNormalAtIndex(i);
-        const ofVec3f & tangent = tubePoly.getTangentAtIndex(i);
-        float radius = tubeRadius[i];
+        const ofVec3f & p0 = tubePoly.getVertices()[i];
+        const ofVec3f & n0 = tubePoly.getNormalAtIndex(i);
+        const ofVec3f & t0 = tubePoly.getTangentAtIndex(i);
+        float r0 = tubeRadius[i];
         
-        ofVec3f vert;
+        ofVec3f v0;
         for(int j=0; j<tubeResolution; j++) {
             float p = j / (float)tubeResolution;
             float a = p * 360;
-            vert = normal.rotated(a, tangent);
-            vert *= radius;
-            vert += point;
+            v0 = n0.rotated(a, t0);
             
-            mesh->addVertex(vert);
+            mesh->addNormal(v0);
+            
+            v0 *= r0;
+            v0 += p0;
+            
+            mesh->addVertex(v0);
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    vector<ofVec3f> & verts = mesh->getVertices();
+    int numOfVerts = verts.size();
+    bool bLeftToRight;
+    bool bRingEnd;
+    int i0, i1;
+    int k;
+    
+    int numOfTubeSections = tubePoly.size();
+    for(int i=0; i<numOfTubeSections; i++) {
+
+        bLeftToRight = (i % 2 == 0);
+        k = 0;
+        
+        for(int j=0; j<tubeResolution+1; j++) {
+            
+            i0 = (i + 0) * tubeResolution + k;
+            i1 = (i + 1) * tubeResolution + k;
+            
+            if(bLeftToRight == true) {
+                k += 1;
+                if(k > tubeResolution) {
+                    k -= tubeResolution;
+                }
+            } else {
+                k -= 1;
+                if(k < 0) {
+                    k += tubeResolution;
+                }
+            }
+
+            if(i0 > numOfVerts - 1) {
+                i0 -= numOfVerts;
+            }
+            if(i1 > numOfVerts - 1) {
+                i1 -= numOfVerts;
+            }
+            
+            mesh->addIndex(i0);
+            mesh->addIndex(i1);
+            
+            bRingEnd = (j == tubeResolution);
+            if(bRingEnd == true) {
+                mesh->addIndex(i1);
+            }
         }
     }
 }
@@ -105,7 +158,7 @@ void ofxTubePrimitive::drawTubeTangents(float tangentLength) {
     }
 }
 
-void ofxTubePrimitive::drawTubeRings(float ringRadius) {
+void ofxTubePrimitive::drawTubeRings() {
 
     for(int i=0; i<tubePoly.size(); i++) {
         ofNoFill();
