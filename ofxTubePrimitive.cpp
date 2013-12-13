@@ -107,7 +107,7 @@ void ofxTubePrimitive::update() {
             
             if(bLeftToRight == true) {
                 k += 1;
-                if(k > tubeResolution) {
+                if(k > tubeResolution-1) {
                     k -= tubeResolution;
                 }
             } else {
