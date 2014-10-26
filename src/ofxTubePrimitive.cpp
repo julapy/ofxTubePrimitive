@@ -145,7 +145,7 @@ void ofxTubePrimitive::drawTubeNormals(float normalLenght) {
         const ofVec3f & normal = tubePoly.getNormalAtIndex(i);
         const ofVec3f & p1 = tubePoly.getVertices()[i];
         ofVec3f p2 = p1 + normal * normalLenght;
-        ofLine(p1, p2);
+        ofDrawLine(p1, p2);
     }
 }
 
@@ -154,7 +154,7 @@ void ofxTubePrimitive::drawTubeTangents(float tangentLength) {
         const ofVec3f & tangent = tubePoly.getTangentAtIndex(i);
         const ofVec3f & p1 = tubePoly.getVertices()[i];
         ofVec3f p2 = p1 + tangent * tangentLength;
-        ofLine(p1, p2);
+        ofDrawLine(p1, p2);
     }
 }
 
